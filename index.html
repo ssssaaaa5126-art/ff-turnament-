@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FF Tournament App</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: #10121b;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 15px;
+}
+
+header h1 {
+  color: #ff9f1c;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+nav button {
+  flex: 1;
+}
+
+.card {
+  background: #202432;
+  padding: 17px;
+  margin: 14px 0;
+  border: 1px solid #383e50;
+  border-radius: 12px;
+}
+
+h2 {
+  color: #ffb347;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #50566a;
+  border-radius: 7px;
+  background: #151925;
+  color: white;
+}
+
+button {
+  background: #ff9f1c;
+  color: #151515;
+  padding: 12px;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.card button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.secondary {
+  background: #41485c;
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.small {
+  font-size: 13px;
+  color: #c5cad5;
+  line-height: 1.5;
+}
+
+.status {
+  color: #64e291;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+#message {
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🔥 FF TOURNAMENT 🔥</h1>
+  <p>Compete • Play • Enjoy</p>
+</header>
+
+<nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('register')">Register</button>
+  <button onclick="showPage('admin')">Admin</button>
+</nav>
+
+<!-- HOME PAGE -->
+
+<section id="home">
+
+  <div class="card">
+    <h2>🎮 Solo Battle Royale</h2>
+    <p>Mode: Solo</p>
+    <p>Status: <span class="status" id="homeStatus">Upcoming</span></p>
+    <button onclick="openRegistration('Solo')">
+      Register for Solo
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>👥 Duo Battle Royale</h2>
+    <p>Mode: Duo</p>
+    <p>Status: <span class="status" id="homeStatusDuo">Upcoming</span></p>
+    <button onclick="openRegistration('Duo')">
+      Register for Duo
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>📢 Tournament Information</h2>
+    <p id="publicMessage">Tournament registration is open!</p>
+    <p class="small">
+      This is a demo app. No real payments or online
+      tournament services are connected.
+    </p>
+  </div>
+
+</section>
+
+<!-- REGISTRATION PAGE -->
+
+<section id="register" class="hidden">
+
+  <div class="card">
+    <h2>📝 Player Registration</h2>
+
+    <form id="registrationForm">
+
+      <label>Player Name</label>
+      <input
+        id="playerName"
+        type="text"
+        maxlength="40"
+        placeholder="Enter player name"
+        required
+      >
+
+      <label>Free Fire UID</label>
+      <input
+        id="playerUID"
+        type="text"
+        inputmode="numeric"
+        maxlength="25"
+        placeholder="Enter FF UID"
+        required
+      >
+
+      <label>Tournament Mode</label>
+      <select id="playerMode" onchange="toggleDuo()">
+        <option value="Solo">Solo</option>
+        <option value="Duo">Duo</option>
+      </select>
+
+      <div id="duoFields" class="hidden">
+
+        <label>Teammate Name</label>
+        <input
+          id="teammateName"
+          type="text"
+          maxlength="40"
+          placeholder="Enter teammate name"
+        >
+
+        <label>Teammate UID</label>
+        <input
+          id="teammateUID"
+          type="text"
+          inputmode="numeric"
+          maxlength="25"
+          placeholder="Enter teammate UID"
+        >
+
+      </div>
+
+      <button type="submit">Submit Registration</button>
+
+    </form>
+
+    <p id="message"></p>
+  </div>
+
+</section>
+
+<!-- ADMIN LOGIN -->
+
+<section id="admin" class="hidden">
+
+  <div id="loginBox" class="card">
+
+    <h2>🔐 Admin Login</h2>
+
+    <input
+      id="adminUsername"
+      type="text"
+      placeholder="Username"
+      autocomplete="off"
+    >
+
+    <input
+      id="adminPassword"
+      type="password"
+      placeholder="Password"
+      autocomplete="off"
+    >
+
+    <button onclick="login()">Login</button>
+
+    <p class="small">
+      Demo credentials:<br>
+      Username: admin<br>
+      Password: FF123
+    </p>
+
+    <p class="small">
+      Demo login secure authentication nahi hai.
+      Real app mein secure server-side login chahiye.
+    </p>
+
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+
+  <div id="dashboard" class="hidden">
+
+    <div class="card">
+      <h2>👑 Admin Dashboard</h2>
+
+      <p>Total Registrations:
+        <strong id="totalPlayers">0</strong>
+      </p>
+
+      <p>Solo Registrations:
+        <strong id="soloCount">0</strong>
+      </p>
+
+      <p>Duo Registrations:
+        <strong id="duoCount">0</strong>
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>🏆 Tournament Status</h2>
+
+      <select id="adminStatus">
+        <option value="Upcoming">Upcoming</option>
+        <option value="Live">Live</option>
+        <option value="Completed">Completed</option>
+      </select>
+
+      <label>Public Announcement</label>
+      <input
+        id="announcement"
+        type="text"
+        maxlength="200"
+        placeholder="Enter tournament announcement"
+      >
+
+      <button onclick="updateTournament()">
+        Update Tournament
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>🔑 Room Details</h2>
+
+      <input
+        id="roomID"
+        type="text"
+        maxlength="50"
+        placeholder="Room ID"
+      >
+
+      <input
+        id="roomPass"
+        type="password"
+        maxlength="50"
+        placeholder="Room Password"
+      >
+
+      <button onclick="saveRoom()">Save Room Details</button>
+
+      <p id="roomMessage" class="small"></p>
+
+      <p class="small">
+        Room details abhi sirf is demo session mein rahengi.
+        Ye secure online storage nahi hai.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>👥 Registered Players</h2>
+      <div id="playersList">
+        No registrations yet.
+      </div>
+    </div>
+
+    <button class="danger" onclick="logout()">Logout</button>
+
+  </div>
+
+</section>
+
+<script>
+
+// Demo data: sab kuch ek hi page mein share hota hai.
+let registrations = [];
+let tournamentStatus = "Upcoming";
+let announcement = "Tournament registration is open!";
+let roomID = "";
+let roomPassword = "";
+let adminLoggedIn = false;
+
+// Page navigation
+function showPage(page) {
+  ["home", "register", "admin"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+
+  document.getElementById(page).classList.remove("hidden");
+
+  if (page === "admin") {
+    if (adminLoggedIn) {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      renderPlayers();
+    } else {
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("dashboard").classList.add("hidden");
+    }
+  }
+}
+
+// Open registration with selected mode
+function openRegistration(mode) {
+  document.getElementById("playerMode").value = mode;
+  toggleDuo();
+  document.getElementById("message").textContent = "";
+  showPage("register");
+  window.scrollTo(0, 0);
+}
+
+// Duo fields
+function toggleDuo() {
+  const duo = document.getElementById("playerMode").value === "Duo";
+
+  document.getElementById("duoFields")
+    .classList.toggle("hidden", !duo);
+
+  document.getElementById("teammateName").required = duo;
+  document.getElementById("teammateUID").required = duo;
+}
+
+// Submit registration
+document.getElementById("registrationForm")
+.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("playerName").value.trim();
+  const uid = document.getElementById("playerUID").value.trim();
+  const mode = document.getElementById("playerMode").value;
+  const teammate = document.getElementById("teammateName").value.trim();
+  const teammateUID = document.getElementById("teammateUID").value.trim();
+
+  if (!name || !uid) {
+    alert("Player name aur UID bharo.");
+    return;
+  }
+
+  if (mode === "Duo" && (!teammate || !teammateUID)) {
+    alert("Duo ke liye teammate ki details bharo.");
+    return;
+  }
+
+  // Prevent duplicate UID registrations in this demo.
+  const duplicate = registrations.some(player =>
+    player.uid === uid ||
+    (mode === "Duo" && player.teammateUID === teammateUID)
+  );
+
+  if (duplicate) {
+    alert("Ye UID pehle register ho chuki hai.");
+    return;
+  }
+
+  registrations.push({
+    name,
+    uid,
+    mode,
+    teammate: mode === "Duo" ? teammate : "",
+    teammateUID: mode === "Duo" ? teammateUID : ""
+  });
+
+  document.getElementById("message").textContent =
+    "✅ Registration successful!";
+
+  this.reset();
+  toggleDuo();
+
+  renderPlayers();
+});
+
+// Demo admin login
+function login() {
+  const username = document.getElementById("adminUsername").value;
+  const password = document.getElementById("adminPassword").value;
+
+  if (username === "admin" && password === "FF123") {
+    adminLoggedIn = true;
+
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("adminStatus").value = tournamentStatus;
+    document.getElementById("announcement").value = announcement;
+
+    renderPlayers();
+  } else {
+    alert("Wrong username or password!");
+  }
+}
+
+// Logout
+function logout() {
+  adminLoggedIn = false;
+
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
+
+  document.getElementById("adminUsername").value = "";
+  document.getElementById("adminPassword").value = "";
+}
+
+// Update tournament status and announcement
+function updateTournament() {
+  tournamentStatus = document.getElementById("adminStatus").value;
+
+  announcement =
+    document.getElementById("announcement").value.trim() ||
+    "Tournament registration is open!";
+
+  document.getElementById("homeStatus").textContent = tournamentStatus;
+  document.getElementById("homeStatusDuo").textContent = tournamentStatus;
+  document.getElementById("publicMessage").textContent = announcement;
+
+  alert("Tournament information updated!");
+}
+
+// Save demo room details
+function saveRoom() {
+  roomID = document.getElementById("roomID").value.trim();
+  roomPassword = document.getElementById("roomPass").value.trim();
+
+  if (!roomID || !roomPassword) {
+    alert("Room ID aur password dono bharo.");
+    return;
+  }
+
+  document.getElementById("roomMessage").textContent =
+    "Room details entered in this demo session.";
+
+  alert("Demo room details saved temporarily.");
+}
+
+// Render registered players in admin dashboard
+function renderPlayers() {
+  const list = document.getElementById("playersList");
+  list.replaceChildren();
+
+  document.getElementById("totalPlayers").textContent =
+    registrations.length;
+
+  document.getElementById("soloCount").textContent =
+    registrations.filter(p => p.mode === "Solo").length;
+
+  document.getElementById("duoCount").textContent =
+    registrations.filter(p => p.mode === "Duo").length;
+
+  if (registrations.length === 0) {
+    list.textContent = "No registrations yet.";
+    return;
+  }
+
+  registrations.forEach((player, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    function addLine(text) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      card.appendChild(p);
+    }
+
+    addLine("Player: " + player.name);
+    addLine("UID: " + player.uid);
+    addLine("Mode: " + player.mode);
+
+    if (player.mode === "Duo") {
+      addLine("Teammate: " + player.teammate);
+      addLine("Teammate UID: " + player.teammateUID);
+    }
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "danger";
+    deleteButton.textContent = "Delete Registration";
+
+    deleteButton.onclick = function() {
+      if (confirm("Is registration ko delete karna hai?")) {
+        registrations.splice(index, 1);
+        renderPlayers();
+      }
+    };
+
+    card.appendChild(deleteButton);
+    list.appendChild(card);
+  });
+}
+
+</script>
+
+</body>
+</html>
